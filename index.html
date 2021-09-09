@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEM</title>
+    <!-- Link trực tiếp cái link sau khi search 'font awesome cdnjs' -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Link Css file -->
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <!-- Mặc định thẻ div trống với id 'toast' -->
+    <div id="toast"></div>
+
+    <div>
+        <div onclick="showSuccessToast();" class="btn btn--success">Show success toast</div>
+        <div onclick="showErrorToast();" class="btn btn--error">Show error toast</div>
+        <div onclick="showInfoToast();" class="btn btn--info">Show info toast</div>
+        <div onclick="showWarningToast();" class="btn btn--warning">Show warning toast</div>
+    </div>
+
+  
+
+
+
+
+
+
+
+
+    <script>
+        // Tạo toast function và cho nó những giá trị mặt định  {title='', message='', type='info', duration=3000}
+        function toast({title='', message='', type='info', duration=3000}) {
+            const main = document.getElementById('toast');
+            // Kiểm tra nếu có main thì xử lý tiếp
+            if (main) {
+                // Tạo 1 thẻ div
+                const toast = document.createElement('div');
+
+                // Funtion tự động remove
+                // Sau khoảng duration thì nó remove con đi
+                // Vì duration chỉ là thời gian delay trước khi xuất hiện animation 'fadeOut' nên nếu không
+                // + thêm 1000 (1s) thì nó sẽ biến mất rất nhanh chứ không biến mất từ từ như khi ta css cho fadeOut là 1s.
+                const autoRemove = setTimeout(function () {
+                    main.removeChild(toast);
+                }, duration + 1000);
+
+
+                // Chỉ remove khi user click vào thẻ div có class 'toast_close' hoặc click trúng các 
+                // thẻ con của nó thì nó cũng xóa
+                toast.onclick = function(e) {
+                    if(e.target.closest('.toast_close')) {
+                        main.removeChild(toast);
+
+                        // Ta đặt 1 biến 'autoRemove' để gán giá trị setTimeout trả về, và clear setTimeOut đi 
+                        // khi ta đã click vào dấu x để remove toast trước khi setTimeOut xảy ra, nếu không 
+                        // clear nó thì web vẫn chạy bình thường nhưng khi bật tab console thì sẽ thấy 
+                        // lỗi xung đột vì khi ta click dấu x thì nó đã xóa toast message đi thì tới khi
+                        // setTimeOut thực hiện việc xóa toast thì không còn toast để nó xóa nên nó xảy ra
+                        // xung đột. Vì vậy cách khắc phục cho function click nút x để xóa đó là vừa xóa
+                        // toast đi mà cũng xóa luôn setTimeOut của chính toast mà ta click vào.
+                        clearTimeout(autoRemove);
+                    }
+                }
+
+                // Tạo ra 1 biến và gán 1 object, trong object là 1 số loại icon
+                const icons = {
+                    success: 'fa fa-check-circle',
+                    info: 'fa fa-info-circle',
+                    warning: 'fa fa-exclamation-circle',
+                    error: 'fa fa-exclamation-circle'
+                }
+
+                // Tương ứng với cái type của function toast bên trên thì có cái icon tương đương
+                const icon = icons[type];
+
+                // Tạo ra biến delay để khi duration của các function onclick bên dưới thay đổi thì nó chia 
+                // cho 1000 là ra số giây để đưa vào giá trị delay của animation. Còn 'toFixed(2)' nghĩa là 
+                // lấy 2 chũ số thập phân nếu nó là số dư (Vd: 3250 / 1000 nó ra số lẽ)
+                const delay = (duration / 1000).toFixed(2);
+
+                // Add class 'toast' vào
+                // `toast--${type}` là add modifier cho toast
+                toast.classList.add('toast', `toast--${type}`);
+
+                // Sau khi add class vào thì add luôn animation của nó vào chứ đừng css riêng
+                // vì thời gian bên css nó vẫn sẽ thực hiện khi JS thay đổi 'duration'
+                toast.style.animation = `slideInLeft ease 0.3s, fadeOut linear 1s ${delay}s forwards`;
+
+                // Cut đoạn html ban đầu trong thẻ div có id 'toast' trong phần html vào đây. Vì ta đã 
+                // cut rồi nên thẻ div phần html bây giờ trống và set nó các giá trị động chứ không set cứng 
+                // như lúc làm trên phần html nữa.
+                toast.innerHTML = `
+                    <div class="toast__icon">
+                        <i class="${icon}"></i>
+                    </div>
+                    <div class="toast__body">
+                        <h3 class="toast__title">${title}</h3>
+                        <p class="toast__msg">${message}</p>
+                    </div>
+                    <div class="toast_close">
+                        <i class="fa fa-times"></i>
+                    </div>
+                `;
+                // Add con vào
+                main.appendChild(toast);
+
+                
+            }
+        }
+
+
+        function showSuccessToast() {
+            toast ({
+            title: 'Success',
+            message: 'You have successfully registered an account',
+            type: 'success',
+            duration: 1000
+        });
+        }
+
+        function showErrorToast() {
+            toast ({
+            title: 'Error',
+            message: 'There is an error, please contact the administrator',
+            type: 'error',
+            duration: 3000
+        });
+        }
+
+        function showInfoToast() {
+            toast ({
+            title: 'Info',
+            message: 'There is a information',
+            type: 'info',
+            duration: 2000
+        });
+        }
+
+        function showWarningToast() {
+            toast ({
+            title: 'Warning',
+            message: 'There is a warning',
+            type: 'warning',
+            duration: 4000
+        });
+        }
+
+
+    </script>
+</body>
+</html>

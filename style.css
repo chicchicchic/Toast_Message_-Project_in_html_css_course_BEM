@@ -1,0 +1,190 @@
+* {
+
+}
+
+html {
+    width: 800px;
+    height: 800px;  
+    margin-left: 100px;
+    margin-top: 400px;  
+    
+}
+
+body {
+    background-color: #333;
+    margin: 0;
+    padding: 0;
+    display: block;
+}
+
+
+
+
+
+.btn {
+    width: 300px;
+    height: 50px;
+    font-size: 30px;
+    margin-left: 600px;
+    display: inline-block;
+    text-align: center;
+    font-weight: 500;
+    margin-top: 300px;
+    border-radius: 40%;
+    cursor: pointer;
+}
+
+.btn--success {
+    background-color: #33cc33;
+}
+
+.btn--error {
+    background-color: #ff0000;
+    margin-top: 20px;
+}
+
+.btn--info {
+    background-color: #0000ff;
+    margin-top: 20px;
+}
+
+.btn--warning {
+    background-color: #ffff00;
+    margin-top: 20px;
+}
+
+
+
+
+
+
+
+
+
+
+
+#toast {
+    position: fixed;
+    top: 32px;
+    right: 32px;
+}
+
+.toast {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 2px;
+    padding: 20px 0;
+    min-width: 400px;
+    max-width: 450px;
+    border-left: 10px solid;
+    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.08);
+    /* (comment) Theo trục ngang (X) cho nó ẩn đi thì 100% của nó, nhưng do #toast rigth 32px nên dùng phép
+    tính calc(100% + 32px) để nó ẩn hoàn toàn, không còn lộ ra nữa 
+     transform: translateX(calc(100% + 32px)); (test để cho hỉu thui) */
+
+     /* Add cả 2 animation vào cặp animation xu61t hiện và ẩn đi */
+     /* 1s là thời gian mà nó mờ hẳn đi, 3s là thời gian nó delay, nghĩa là sau 3s thì animation ẩn đi
+     bắt đầu thực hiện và nó ẩn đi trong 1s, 'forwards' là để cho nó dừng lại ở điểm cuối animation chứ 
+     không hiện lại sau khi ẩn đi */
+     /* animation: slideInLeft ease 0.3s, fadeOut linear 1s 3s forwards; (Đoạn animation này đã gán vào
+     javascript*/
+
+     /* Cái này là thêm vào để khi nó biến mất thì nhìn nó trôi đều đều lên chứ không bị giật*/
+     /* all nghĩa là áp dụng trên tất cả animation */
+     transition: all linear 0.3s;
+}
+
+/* animation cho việc trược vào */
+@keyframes slideInLeft {
+    from {
+        /* Điểm này là điểm ẩn của toast message bên ngoài */
+        opacity: 0;
+        transform: translateX(calc(100% + 32px));
+    }
+    to {
+        opacity: 1;
+        /* Điểm đến là điểm mà sau khi nó trượt vào xong */
+        transform: translateX(0);
+    }
+}
+
+/* animation cho việc mờ mờ ẩn đi */
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+    }
+}
+
+.toast--success {
+    border-color: #33cc33;    
+}
+
+.toast--success .toast__icon {
+    color: #33cc33;
+}
+
+.toast--info {
+    border-color: #0000ff;    
+}
+
+.toast--info .toast__icon {
+    color: #0000ff;
+}
+
+.toast--warning {
+    border-color: #ffff00;    
+}
+
+.toast--warning .toast__icon {
+    color: #ffff00;
+}
+
+.toast--error {
+    border-color: #ff0000;    
+}
+
+.toast--error .toast__icon {
+    color: #ff0000;
+}
+
+
+.toast + .toast {
+    margin-top: 24px;
+}
+.toast__icon {
+    font-size: 24px;
+}
+
+.toast__icon,
+.toast_close {
+    padding: 0 16px;
+
+}
+
+.toast__body {
+    flex-grow: 1;
+}
+
+.toast__title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+
+}
+
+.toast__msg {
+    font-size: 14px;
+    color: #888;
+    margin-top: 4px;
+    line-height: 1.5;
+
+}
+
+.toast_close {
+    font-size: 20px;
+    color: rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+}
+
+
